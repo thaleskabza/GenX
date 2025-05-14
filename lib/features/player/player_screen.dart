@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/models/radio_station.dart';
 import '../../core/services/radio_service.dart';
+import '../../config/constants.dart';
 
 class PlayerScreen extends StatefulWidget {
   final RadioStation station;
@@ -44,6 +45,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final displayLogo = widget.station.logoUrl.isNotEmpty
+        ? widget.station.logoUrl
+        : defaultStationLogo;
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.station.name)),
       body: Padding(
@@ -51,9 +56,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            widget.station.logoUrl.isNotEmpty
-                ? Image.network(widget.station.logoUrl, height: 100)
-                : Icon(Icons.radio, size: 100, color: Colors.grey),
+            Image.network(
+              displayLogo,
+              height: 100,
+              errorBuilder: (_, __, ___) =>
+                  const Icon(Icons.radio, size: 100, color: Colors.grey),
+            ),
             const SizedBox(height: 20),
             Text(
               widget.station.name,

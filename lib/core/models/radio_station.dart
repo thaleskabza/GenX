@@ -1,3 +1,5 @@
+import '../../config/constants.dart';
+
 class RadioStation {
   final String name;
   final String streamUrl;
@@ -14,10 +16,11 @@ class RadioStation {
   });
 
   factory RadioStation.fromJson(Map<String, dynamic> json) {
+    final logo = json['favicon'];
     return RadioStation(
       name: json['name'] ?? 'Unknown',
       streamUrl: json['url_resolved'] ?? '',
-      logoUrl: json['favicon'] ?? '',
+      logoUrl: (logo == null || logo.isEmpty) ? defaultStationLogo : logo,
       country: json['country'] ?? '',
       tags: json['tags'] ?? '',
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/models/radio_station.dart';
+import '../../config/constants.dart'; // for defaultStationLogo
 
 class StationCard extends StatelessWidget {
   final RadioStation station;
@@ -13,14 +14,23 @@ class StationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayLogo = station.logoUrl.isNotEmpty ? station.logoUrl : defaultStationLogo;
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
-        leading: station.logoUrl.isNotEmpty
-            ? Image.network(station.logoUrl, width: 50, height: 50, fit: BoxFit.cover)
-            : const Icon(Icons.radio, size: 40),
-        title: Text(station.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        leading: Image.network(
+          displayLogo,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => const Icon(Icons.radio, size: 40),
+        ),
+        title: Text(
+          station.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         subtitle: Text(
           '${station.country}${station.tags.isNotEmpty ? ' • ${station.tags}' : ''}',
           style: const TextStyle(color: Colors.grey),
