@@ -31,18 +31,30 @@ class RadioBrowserApi {
     }
   }
 
-  Future<List<String>> fetchCountries() async {
-    final response = await http.get(Uri.parse('$_baseUrl/countries'));
+Future<List<String>> fetchCountries() async {
+  final response = await http.get(Uri.parse('$_baseUrl/countries'));
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data
-          .map((json) => json['name'] as String?)
-          .where((name) => name != null && name.isNotEmpty)
-          .cast<String>()
-          .toList();
-    } else {
-      throw Exception('Failed to fetch countries');
+  if (response.statusCode == 200) {
+    final List<dynamic> data = jsonDecode(response.body);
+    final List<String> countries = data
+        .map((json) => json['name'] as String?)
+        .where((name) => name != null && name.isNotEmpty)
+        .cast<String>()
+        .toList();
+
+    // Sort alphabetically
+    countries.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+
+    // Move 'South Africa' to the top if it exists
+    if (countries.contains('South Africa')) {
+      countries.remove('South Africa');
+      countries.insert(0, 'South Africa');
     }
+
+    return countries;
+  } else {
+    throw Exception('Failed to fetch countries');
   }
+}
+
 }
