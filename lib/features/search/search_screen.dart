@@ -1,9 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+
 import '../../core/models/radio_station.dart';
 import '../../core/services/radio_browser_api.dart';
 import '../../shared/widgets/station_card.dart';
 import '../player/player_screen.dart';
+import '../welcome/welcome_screen.dart'; 
+import 'country_dropdown.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -58,6 +61,24 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  void _filterByCountry(String country) async {
+    setState(() {
+      _loading = true;
+      _results = [];
+    });
+
+    try {
+      final stations = await _api.stationsByCountry(country);
+      setState(() => _results = stations);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading country: ${e.toString()}')),
+      );
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -67,7 +88,21 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Search Radio Stations')),
+      appBar: AppBar(
+        title: const Text('Search Radio Stations'),
+        actions: [
+          IconButton(
+            tooltip: 'Go to Welcome',
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -79,6 +114,8 @@ class _SearchScreenState extends State<SearchScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(children: [
+              CountryDropdown(onCountrySelected: _filterByCountry),
+              const SizedBox(height: 16),
               TextField(
                 controller: _controller,
                 style: const TextStyle(color: Colors.black),
@@ -99,7 +136,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 const CircularProgressIndicator()
               else if (_results.isEmpty)
                 const Text(
-                  'No results found. Try a different name or frequency.',
+                  'No results found. Try a different name or country.',
                   style: TextStyle(color: Colors.white),
                 ),
               if (_results.isNotEmpty)

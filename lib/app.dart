@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'features/player/player_provider.dart';
+import 'features/favorites/favorites_provider.dart';
 import 'features/welcome/welcome_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -9,8 +10,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => PlayerProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => PlayerProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+      ],
       child: MaterialApp(
         title: 'GenX Radio App',
         debugShowCheckedModeBanner: false,
@@ -24,7 +28,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const WelcomeScreen(), // Starts from the Welcome screen
+        home: const WelcomeScreen(), // Start screen
       ),
     );
   }

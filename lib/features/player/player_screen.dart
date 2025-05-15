@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../core/models/radio_station.dart';
 import '../../core/services/radio_service.dart';
+import '../../features/favorites/favorites_provider.dart';
 import '../../config/constants.dart';
 
 class PlayerScreen extends StatefulWidget {
@@ -45,12 +48,32 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final favoritesProvider = Provider.of<FavoritesProvider>(context);
+    final isFavorite = favoritesProvider.isFavorite(widget.station);
     final displayLogo = widget.station.logoUrl.isNotEmpty
         ? widget.station.logoUrl
         : defaultStationLogo;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.station.name)),
+      appBar: AppBar(
+        title: Text(widget.station.name),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.white,
+            ),
+            onPressed: () {
+              if (isFavorite) {
+                favoritesProvider.removeFavorite(widget.station);
+              } else {
+                favoritesProvider.addFavorite(widget.station);
+              }
+            },
+            tooltip: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

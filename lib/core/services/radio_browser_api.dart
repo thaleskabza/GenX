@@ -30,4 +30,19 @@ class RadioBrowserApi {
       throw Exception('Failed to load stations');
     }
   }
+
+  Future<List<String>> fetchCountries() async {
+    final response = await http.get(Uri.parse('$_baseUrl/countries'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data
+          .map((json) => json['name'] as String?)
+          .where((name) => name != null && name.isNotEmpty)
+          .cast<String>()
+          .toList();
+    } else {
+      throw Exception('Failed to fetch countries');
+    }
+  }
 }

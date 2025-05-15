@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../search/search_screen.dart';
+import '../favorites/favorites_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -51,6 +52,21 @@ class WelcomeScreen extends StatelessWidget {
                     );
                   },
                   child: const Text('Get Started'),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    backgroundColor: Colors.deepPurple.shade700,
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+                    );
+                  },
+                  child: const Text('View Favorites'),
                 ),
               ],
             ),

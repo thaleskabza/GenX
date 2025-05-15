@@ -1,5 +1,4 @@
-import '../../config/constants.dart';
-
+import '/config/constants.dart';
 class RadioStation {
   final String name;
   final String streamUrl;
@@ -24,5 +23,15 @@ class RadioStation {
       country: json['country'] ?? '',
       tags: json['tags'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'streamUrl': streamUrl,
+      'logoUrl': logoUrl,
+      'country': country,
+      'tags': tags,
+    };
   }
 }
